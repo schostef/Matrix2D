@@ -2,10 +2,6 @@
 #define MATRIX_H
 #include "includes.h"
 #include "Fraction.cpp"
-template <class T>
-struct mRow {	
-	std::map<int, T> cols;
-};
 
 template<class T>
 class Matrix
@@ -13,7 +9,7 @@ class Matrix
 private:
 	int rowSize;
 	int colSize;
-	std::map<int, mRow<T>> rows;
+	std::map<int, std::map<int, T>> rows;
 public:
 	Matrix() {};
 	Matrix(int, int);
@@ -23,6 +19,7 @@ public:
 	std::vector<T> getRow(int key);
 	std::vector<T> getCol(int key);
 	T getValue(int row, int col);
+	T* getObj(int rowID, int colID);
 	void setValue(int row, int col, T val);
 	T multiplyVector(std::vector<T> &v1, std::vector<T> &v2);
 	Matrix operator*(Matrix<T> &m );
@@ -34,7 +31,7 @@ class Matrix<int>
 private:
 	int rowSize;
 	int colSize;
-	std::map<int, mRow<int>> rows;
+	std::map<int, std::map<int,int>> rows;
 public:		
 	Matrix() {};
 	Matrix(int, int);
@@ -63,54 +60,54 @@ public:
 	int determinant();	
 };
 
-template<>
-class Matrix<bool>
-{
-private:
-	int rowSize;
-	int colSize;
-protected:
-	std::map<int, mRow<bool>> rows;
-public:		
-	bool getValue(int row, int col);
-	void setValue(int row, int col, bool val);
-	void resize(int rowSize, int colSize);
-	bool isDimensionEqual(Matrix &m);
-	bool isSymmetric();
-	Matrix<bool> transpose();
-	bool operator==(const Matrix<bool> &m);
-	Matrix operator!();	
-	Matrix operator&&(const Matrix &m);
-	Matrix operator||(const Matrix &m);	
-	bool isTautologic();		
-};
+//template<>
+//class Matrix<bool>
+//{
+//private:
+//	int rowSize;
+//	int colSize;
+//protected:
+//	std::map<int, mRow<bool>> rows;
+//public:		
+//	bool getValue(int row, int col);
+//	void setValue(int row, int col, bool val);
+//	void resize(int rowSize, int colSize);
+//	bool isDimensionEqual(Matrix &m);
+//	bool isSymmetric();
+//	Matrix<bool> transpose();
+//	bool operator==(const Matrix<bool> &m);
+//	Matrix operator!();	
+//	Matrix operator&&(const Matrix &m);
+//	Matrix operator||(const Matrix &m);	
+//	bool isTautologic();		
+//};
 
-template<>
-class Matrix<double>
-{
-private:
-	int rowSize;
-	int colSize;
-protected:
-	std::map<int, mRow<double>> rows;
-public:					
-	double getValue(int row, int col);
-	void setValue(int row, int col, double val);
-	void resize(int rowSize, int colSize);
-	bool isRegular();
-	bool isDimensionEqual(Matrix &m);
-	bool isSymmetric();
-	Matrix<double> transpose();	
-	std::vector<double> rowSum();
-	std::vector<double> colSum();
-	bool operator==(const Matrix<double> &m);
-	Matrix operator+(const Matrix<double> &m);
-	Matrix operator-(const Matrix<double> &m);
-	Matrix operator*(const double v);
-	std::vector<double> operator*(const std::vector<double> &v);
-	Matrix operator*(const Matrix<double> &m);
-	double determinant();	
-};
+//template<>
+//class Matrix<double>
+//{
+//private:
+//	int rowSize;
+//	int colSize;
+//protected:
+//	std::map<int, mRow<double>> rows;
+//public:					
+//	double getValue(int row, int col);
+//	void setValue(int row, int col, double val);
+//	void resize(int rowSize, int colSize);
+//	bool isRegular();
+//	bool isDimensionEqual(Matrix &m);
+//	bool isSymmetric();
+//	Matrix<double> transpose();	
+//	std::vector<double> rowSum();
+//	std::vector<double> colSum();
+//	bool operator==(const Matrix<double> &m);
+//	Matrix operator+(const Matrix<double> &m);
+//	Matrix operator-(const Matrix<double> &m);
+//	Matrix operator*(const double v);
+//	std::vector<double> operator*(const std::vector<double> &v);
+//	Matrix operator*(const Matrix<double> &m);
+//	double determinant();	
+//};
 
 #endif
 

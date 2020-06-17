@@ -151,15 +151,20 @@ namespace UnitTest1
 			res.setValue(1, 0, 34);  res.setValue(1, 1, 59);
 			Assert::IsTrue(res == (m5 * m6));
 
-			Matrix<Fraction> x = Matrix<Fraction>(1, 1);
-			
-			Assert::IsTrue(x.getValue(0,0).getNumerator() == 11);
+			m2.setValue(0, 0, 1); m2.setValue(0, 1, -2); m2.setValue(0, 2, -3); m2.setValue(0, 3, 4);
+			m2.setValue(1, 0, 6); m2.setValue(1, 1, 2); m2.setValue(1, 2, -3); m2.setValue(1, 3, 6);
+			m2.setValue(2, 0, 5); m2.setValue(2, 1, 4); m2.setValue(2, 2, 2); m2.setValue(2, 3, 1);
+			m2.setValue(3, 0, 9); m2.setValue(3, 1, -7); m2.setValue(3, 2, 8); m2.setValue(3, 3, 0);
 
-			/*Assert::IsTrue(28 == m1.determinant());
+			m3.setValue(0, 0, 0); m3.setValue(0, 1, 4); m3.setValue(0, 2, -3); m3.setValue(0, 3, 4); m3.setValue(0, 4, 9);
+			m3.setValue(1, 0, 8); m3.setValue(1, 1, 1); m3.setValue(1, 2, 2); m3.setValue(1, 3, 5); m3.setValue(1, 4, 1);
+			m3.setValue(2, 0, 4); m3.setValue(2, 1, -1); m3.setValue(2, 2, 0); m3.setValue(2, 3, 3); m3.setValue(2, 4, -5);
+			m3.setValue(3, 0, 2); m3.setValue(3, 1, 4); m3.setValue(3, 2, -7); m3.setValue(3, 3, 6); m3.setValue(3, 4, -1);
+			m3.setValue(4, 0, 3); m3.setValue(4, 1, 4); m3.setValue(4, 2, 1); m3.setValue(4, 3, 0); m3.setValue(4, 4, 3);
+						
+			Assert::IsTrue(28 == m1.determinant());
 			Assert::IsTrue(-287 == m2.determinant());
-			Assert::IsTrue(1052 == m3.determinant());*/
-
-			
+			Assert::IsTrue(1052 == m3.determinant());			
 		}
 	};
 }																					

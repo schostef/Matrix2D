@@ -9,10 +9,10 @@ Matrix<T>::Matrix(int rows, int cols)
 	colSize = cols;
 	for (int i = 0; i < rowSize; i++)
 	{
-		mRow<T> r;
+		std::map<int,T> r{};
 
 		for (int j = 0; j < colSize; j++)
-			r.cols.insert(std::make_pair(j, T{}));
+			r.insert(std::make_pair(j, T{}));
 		this->rows.insert(std::make_pair(i, r));
 	}
 }
@@ -24,10 +24,10 @@ Matrix<T>::Matrix(std::vector<T> diagonal)
 
 	for (int i = 0; i < rowSize; i++)
 	{
-		mRow<T> r;
+		std::map<int,T> r{};
 
 		for (int j = 0; j < colSize; j++)
-			(i == j) ? r.cols.insert(std::make_pair(j, diagonal[i])) : r.cols.insert(std::make_pair(j, T{}));
+			(i == j) ? r.insert(std::make_pair(j, diagonal[i])) : r.insert(std::make_pair(j, T{}));
 		this->rows.insert(std::make_pair(i, r));
 	}
 }
@@ -35,8 +35,8 @@ Matrix<T>::Matrix(std::vector<T> diagonal)
 template<class T>
 void Matrix<T>::swapRow(int rowID1, int rowID2)
 {
-	mRow<T> row1 = rows.at(rowID1);
-	mRow<T> row2 = rows.at(rowID2);
+	std::map<int,T> row1 = rows.at(rowID1);
+	std::map<int,T> row2 = rows.at(rowID2);
 	rows.erase(rowID1);
 	rows.erase(rowID2);
 	rows.insert(std::make_pair(rowID1, row2));
@@ -46,14 +46,14 @@ void Matrix<T>::swapRow(int rowID1, int rowID2)
 template<class T>
 void Matrix<T>::swapCol(int colID1, int colID2)
 {
-	for (typename std::map<int, mRow<T>>::iterator it = rows.begin(); it != rows.end(); ++it)
+	for (typename std::map<int, std::map<int,T>>::iterator it = rows.begin(); it != rows.end(); ++it)
 	{
-		T col1 = it->second.cols.at(colID1);
-		T col2 = it->second.cols.at(colID2);
-		it->second.cols.erase(colID1);
-		it->second.cols.erase(colID2);
-		it->second.cols.insert(std::make_pair(colID1, col2));
-		it->second.cols.insert(std::make_pair(colID2, col1));
+		T col1 = it->second.at(colID1);
+		T col2 = it->second.at(colID2);
+		it->second.erase(colID1);
+		it->second.erase(colID2);
+		it->second.insert(std::make_pair(colID1, col2));
+		it->second.insert(std::make_pair(colID2, col1));
 	}
 }
 
@@ -61,7 +61,7 @@ template<class T>
 std::vector<T> Matrix<T>::getRow(int key)
 {
 	vector<T> v{};
-	for (typename std::map<int, T>::iterator it = rows.at(key).cols.begin(); it != rows.at(key).cols.end(); ++it)
+	for (typename std::map<int, T>::iterator it = rows.at(key).begin(); it != rows.at(key).end(); ++it)
 		v.push_back(it->second);
 	return v;
 }
@@ -78,12 +78,19 @@ std::vector<T> Matrix<T>::getCol(int key)
 template<class T>
 T Matrix<T>::getValue(int rowID, int colID)
 {
-	return rows.at(rowID).cols.at(colID);
+	return rows.at(rowID).at(colID);
 }
+
+template<class T>
+T* Matrix<T>::getObj(int rowID, int colID)
+{
+	return &rows.at(rowID).at(colID);
+}
+
 template<class T>
 void Matrix<T>::setValue(int row, int col, T val)
 {
-	rows.at(row).cols.at(col) = val;
+	rows.at(row).at(col) = val;
 }
 
 template<class T>
@@ -129,10 +136,10 @@ Matrix<int>::Matrix(int rows, int cols)
 	colSize = cols;
 	for (int i = 0; i < rowSize; i++)
 	{
-		mRow<int> r;
+		std::map<int,int> r;
 
 		for (int j = 0; j < colSize; j++)
-			r.cols.insert(std::make_pair(j, int{}));
+			r.insert(std::make_pair(j, int{}));
 		this->rows.insert(std::make_pair(i, r));
 	}
 }
@@ -143,10 +150,10 @@ Matrix<int>::Matrix(std::vector<int> diagonal)
 
 	for (int i = 0; i < rowSize; i++)
 	{
-		mRow<int> r;
+		std::map<int,int> r;
 
 		for (int j = 0; j < colSize; j++)
-			(i == j) ? r.cols.insert(std::make_pair(j, diagonal[i])) : r.cols.insert(std::make_pair(j, int{}));
+			(i == j) ? r.insert(std::make_pair(j, diagonal[i])) : r.insert(std::make_pair(j, int{}));
 		this->rows.insert(std::make_pair(i, r));
 	}
 }
@@ -154,7 +161,7 @@ Matrix<int>::Matrix(std::vector<int> diagonal)
 std::vector<int> Matrix<int>::getRow(int key)
 {
 	vector<int> v{};
-	for (std::map<int, int>::iterator it = rows.at(key).cols.begin(); it != rows.at(key).cols.end(); ++it)
+	for (std::map<int, int>::iterator it = rows.at(key).begin(); it != rows.at(key).end(); ++it)
 		v.push_back(it->second);
 	return v;
 }
@@ -162,15 +169,15 @@ std::vector<int> Matrix<int>::getRow(int key)
 std::vector<int> Matrix<int>::getCol(int key)
 {
 	std::vector<int> v{};
-	for (std::map<int, mRow<int>>::iterator it = rows.begin(); it != rows.end(); ++it)
-		v.push_back(it->second.cols.at(key));
+	for (std::map<int, std::map<int,int>>::iterator it = rows.begin(); it != rows.end(); ++it)
+		v.push_back(it->second.at(key));
 	return v;
 }
 
 void Matrix<int>::swapRow(int rowID1, int rowID2)
 {
-	mRow<int> row1 = rows.at(rowID1);
-	mRow<int> row2 = rows.at(rowID2);
+	std::map<int,int> row1 = rows.at(rowID1);
+	std::map<int,int> row2 = rows.at(rowID2);
 	rows.erase(rowID1);
 	rows.erase(rowID2);
 	rows.insert(std::make_pair(rowID1, row2));
@@ -179,14 +186,14 @@ void Matrix<int>::swapRow(int rowID1, int rowID2)
 
 void Matrix<int>::swapCol(int colID1, int colID2)
 {
-	for (std::map<int, mRow<int>>::iterator it = rows.begin(); it != rows.end(); ++it)
+	for (std::map<int, std::map<int,int>>::iterator it = rows.begin(); it != rows.end(); ++it)
 	{
-		int col1 = it->second.cols.at(colID1);
-		int col2 = it->second.cols.at(colID2);
-		it->second.cols.erase(colID1);
-		it->second.cols.erase(colID2);
-		it->second.cols.insert(std::make_pair(colID1, col2));
-		it->second.cols.insert(std::make_pair(colID2, col1));
+		int col1 = it->second.at(colID1);
+		int col2 = it->second.at(colID2);
+		it->second.erase(colID1);
+		it->second.erase(colID2);
+		it->second.insert(std::make_pair(colID1, col2));
+		it->second.insert(std::make_pair(colID2, col1));
 	}	
 }
 
@@ -216,12 +223,12 @@ int Matrix<int>::multiplyVector(std::vector<int> &v1, std::vector<int> &v2)
 
 int Matrix<int>::getValue(int rowID, int colID) const
 {
-	return rows.at(rowID).cols.at(colID);
+	return rows.at(rowID).at(colID);
 }
 
 void Matrix<int>::setValue(int row, int col, int val)
 {
-	rows.at(row).cols.at(col) = val;
+	rows.at(row).at(col) = val;
 }
 
 void Matrix<int>::resize(int rowSize, int colSize)
@@ -235,10 +242,10 @@ void Matrix<int>::resize(int rowSize, int colSize)
 	{
 		for (int i = this->rowSize; i < rowSize; i++)
 		{
-			mRow<int> r;
+			std::map<int,int> r;
 
 			for (int j = 0; j < this->colSize; j++)
-				r.cols.insert(std::make_pair(j, int{}));
+				r.insert(std::make_pair(j, int{}));
 			rows.insert(std::make_pair(i, r));
 		}
 	}
@@ -248,13 +255,13 @@ void Matrix<int>::resize(int rowSize, int colSize)
 	{
 		for (int i = 0; i < rowSize; i++)
 			for (int j = colSize; j < this->colSize; j++)
-				rows.at(i).cols.erase(j);
+				rows.at(i).erase(j);
 	}
 	else if (colSize > this->colSize)
 	{
 		for (int i = 0; i < this->rowSize; i++)
 			for (int j = this->colSize; j < colSize; j++)
-				rows.at(i).cols.insert(std::make_pair(j, int{}));
+				rows.at(i).insert(std::make_pair(j, int{}));
 	}
 	this->colSize = colSize;
 }
@@ -320,7 +327,7 @@ bool Matrix<int>::operator==(const Matrix<int>& m)
 
 	for (int i = 0; i < rowSize; i++)
 		for (int j = 0; j < colSize; j++)
-			if (m.rows.at(i).cols.at(j) != rows.at(i).cols.at(j))
+			if (m.rows.at(i).at(j) != rows.at(i).at(j))
 				return false;
 
 	return true;
@@ -418,7 +425,7 @@ int Matrix<int>::determinant()
 		Matrix<Fraction> A = Matrix<Fraction>(rowSize,rowSize); 
 		for (int i = 0; i < rowSize; i++)
 			for (int j = 0; j < rowSize; j++)
-				A.getValue(i, j).setNumerator(getValue(i, j));						
+				A.getObj(i, j)->setNumerator(getValue(i, j));						
 		
 		int pivot[2]{};
 		int multiplier{ 1 };
@@ -428,13 +435,13 @@ int Matrix<int>::determinant()
 			//Init multiplication Matrix Z as Unit Matrix
 			std::vector<Fraction> a{};
 			for (int i = 0; i < rowSize; i++)
-				a.push_back(*new Fraction(1,1));
+				a.push_back(Fraction(1,1));
 			Matrix<Fraction> Z = Matrix<Fraction>(a);
 
 			// find highest |Value(i,j)|
 			std::vector<Fraction> pivotCol = A.getCol(pivotRow);
 			Fraction highestValue = pivotCol[pivotRow];
-			int highestIndex{};
+			int highestIndex{ pivotRow };
 		
 			for (unsigned int i = pivotRow; i < pivotCol.size(); i++)
 				if (pivotCol[i].abs() > highestValue)
@@ -446,6 +453,7 @@ int Matrix<int>::determinant()
 			if (highestIndex != pivotRow)
 			{
 				A.swapRow(pivotRow, highestIndex);
+				pivotCol = A.getCol(pivotRow);
 				multiplier *= -1;
 			}
 		
@@ -462,7 +470,7 @@ int Matrix<int>::determinant()
 			A = Z * A;
 		}
 		//multiply diagonal, divide by multiplier
-		Fraction determinant{};
+		Fraction determinant = Fraction(1,1);
 		for (int i = 0; i < rowSize; i++)
 			determinant *= A.getValue(i, i);		
 		
