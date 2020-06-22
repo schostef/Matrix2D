@@ -9,6 +9,22 @@
 		denominator = denom;
 		simplify();
 	}
+
+	Fraction::Fraction(double d)
+	{
+		double integralPart, fractionalPart = modf(d, &integralPart);
+		int base10Exponent = 0;
+		while (fractionalPart != 0)
+		{
+			d = d * 10;
+			base10Exponent++;
+			fractionalPart = modf(d, &integralPart);			
+		}
+		numerator = integralPart;
+		denominator = pow(10, base10Exponent);
+		simplify();
+	}
+
 	Fraction::Fraction()
 	{
 		numerator = 0;

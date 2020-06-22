@@ -273,7 +273,7 @@ bool Matrix<int>::isRegular()
 
 bool Matrix<int>::isDimensionEqual(const Matrix<int> &m)
 {
-	return (m.rowSize == rowSize && m.colSize == colSize);;
+	return (m.rowSize == rowSize && m.colSize == colSize);
 }
 
 bool Matrix<int>::isSymmetric()
@@ -482,5 +482,512 @@ int Matrix<int>::determinant()
 	}
 }
 
+//Type bool
+Matrix<bool>::Matrix(int rows, int cols)
+{
+	rowSize = rows;
+	colSize = cols;
+	for (int i = 0; i < rowSize; i++)
+	{
+		std::map<int, bool> r{};
 
+		for (int j = 0; j < colSize; j++)
+			r.insert(std::make_pair(j, bool{}));
+		this->rows.insert(std::make_pair(i, r));
+	}
+}
 
+Matrix<bool>::Matrix(std::vector<bool> diagonal)
+{
+	rowSize = colSize = (int)diagonal.size();
+
+	for (int i = 0; i < rowSize; i++)
+	{
+		std::map<int, bool> r{};
+
+		for (int j = 0; j < colSize; j++)
+			(i == j) ? r.insert(std::make_pair(j, diagonal[i])) : r.insert(std::make_pair(j, bool{}));
+		this->rows.insert(std::make_pair(i, r));
+	}
+}
+
+Matrix<bool> Matrix<bool>::copy(Matrix<bool> &m)
+{
+	Matrix t{ Matrix(m.rowSize, m.colSize) };
+	for (int i = 0; i < m.rowSize; i++)
+		for (int j = 0; j < m.colSize; j++)
+			t.setValue(i, j, m.getValue(i, j));
+	return t;
+}
+
+bool Matrix<bool>::getValue(int rowID, int colID) const
+{
+	return rows.at(rowID).at(colID);
+}
+
+void Matrix<bool>::setValue(int row, int col, bool val)
+{
+	rows.at(row).at(col) = val;
+}
+
+void Matrix<bool>::resize(int rowSize, int colSize)
+{
+	if (rowSize < this->rowSize)
+	{
+		for (int i = rowSize; i < this->rowSize; i++)
+			rows.erase(i);
+	}
+	else if (rowSize > this->rowSize)
+	{
+		for (int i = this->rowSize; i < rowSize; i++)
+		{
+			std::map<int, bool> r;
+
+			for (int j = 0; j < this->colSize; j++)
+				r.insert(std::make_pair(j, bool{}));
+			rows.insert(std::make_pair(i, r));
+		}
+	}
+	this->rowSize = rowSize;
+
+	if (colSize < this->colSize)
+	{
+		for (int i = 0; i < rowSize; i++)
+			for (int j = colSize; j < this->colSize; j++)
+				rows.at(i).erase(j);
+	}
+	else if (colSize > this->colSize)
+	{
+		for (int i = 0; i < this->rowSize; i++)
+			for (int j = this->colSize; j < colSize; j++)
+				rows.at(i).insert(std::make_pair(j, bool{}));
+	}
+	this->colSize = colSize;
+}
+
+bool Matrix<bool>::isDimensionEqual(const Matrix<bool> &m)
+{
+	return (m.rowSize == rowSize && m.colSize == colSize);
+}
+
+bool Matrix<bool>::isSymmetric()
+{
+	return *this == transpose();
+}
+
+Matrix<bool> Matrix<bool>::transpose()
+{
+	Matrix<bool> m = copy(*this);
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			if (i != j)
+				m.setValue(i, j, getValue(j, i));
+	return m;
+}
+
+bool Matrix<bool>::operator==(const Matrix<bool> &m)
+{
+	if (!isDimensionEqual(m))
+		return false;
+
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			if (m.rows.at(i).at(j) != rows.at(i).at(j))
+				return false;
+
+	return true;
+}
+
+Matrix<bool> Matrix<bool>::operator!()
+{
+	Matrix<bool> m = Matrix<bool>(rowSize,colSize);
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			m.setValue(i, j, !getValue(i, j));
+	return m;
+}
+
+Matrix<bool> Matrix<bool>::operator&&(const Matrix &m)
+{
+	Matrix<bool> res = Matrix<bool>(rowSize, colSize);
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			res.setValue(i, j, getValue(i,j) && m.getValue(i,j));
+	return res;
+}
+
+Matrix<bool> Matrix<bool>::operator||(const Matrix &m)
+{
+	Matrix<bool> res = Matrix<bool>(rowSize, colSize);
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			res.setValue(i, j, getValue(i, j) || m.getValue(i, j));
+	return res;
+}
+
+bool Matrix<bool>::isTautologic()
+{
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			if (getValue(i, j) == false)
+				return false;
+	return true;
+}
+
+//Type double
+Matrix<double>::Matrix(int rows, int cols)
+{
+	rowSize = rows;
+	colSize = cols;
+	for (int i = 0; i < rowSize; i++)
+	{
+		std::map<int, double> r;
+
+		for (int j = 0; j < colSize; j++)
+			r.insert(std::make_pair(j, double{}));
+		this->rows.insert(std::make_pair(i, r));
+	}
+}
+
+Matrix<double>::Matrix(std::vector<double> diagonal)
+{
+	rowSize = colSize = (int)diagonal.size();
+
+	for (int i = 0; i < rowSize; i++)
+	{
+		std::map<int, double> r;
+
+		for (int j = 0; j < colSize; j++)
+			(i == j) ? r.insert(std::make_pair(j, diagonal[i])) : r.insert(std::make_pair(j, double{}));
+		this->rows.insert(std::make_pair(i, r));
+	}
+}
+
+Matrix<double> Matrix<double>::copy(Matrix<double> &m)
+{
+	Matrix t{ Matrix(m.rowSize, m.colSize) };
+	for (int i = 0; i < m.rowSize; i++)
+		for (int j = 0; j < m.colSize; j++)
+			t.setValue(i, j, m.getValue(i, j));
+	return t;
+}
+
+double Matrix<double>::getValue(int rowID, int colID) const
+{
+	return rows.at(rowID).at(colID);
+}
+
+void Matrix<double>::setValue(int rowID, int colID, double val)
+{
+	rows.at(rowID).at(colID) = val;
+}
+
+void Matrix<double>::swapRow(int rowID1, int rowID2)
+{
+	std::map<int, double> row1 = rows.at(rowID1);
+	std::map<int, double> row2 = rows.at(rowID2);
+	rows.erase(rowID1);
+	rows.erase(rowID2);
+	rows.insert(std::make_pair(rowID1, row2));
+	rows.insert(std::make_pair(rowID2, row1));
+}
+
+void Matrix<double>::swapCol(int colID1, int colID2)
+{
+	for (std::map<int, std::map<int, double>>::iterator it = rows.begin(); it != rows.end(); ++it)
+	{
+		double col1 = it->second.at(colID1);
+		double col2 = it->second.at(colID2);
+		it->second.erase(colID1);
+		it->second.erase(colID2);
+		it->second.insert(std::make_pair(colID1, col2));
+		it->second.insert(std::make_pair(colID2, col1));
+	}
+}
+
+std::vector<double> Matrix<double>::getRow(int key)
+{
+	vector<double> v{};
+	for (std::map<int, double>::iterator it = rows.at(key).begin(); it != rows.at(key).end(); ++it)
+		v.push_back(it->second);
+	return v;
+}
+
+std::vector<double> Matrix<double>::getCol(int key)
+{
+	std::vector<double> v{};
+	for (std::map<int, std::map<int, double>>::iterator it = rows.begin(); it != rows.end(); ++it)
+		v.push_back(it->second.at(key));
+	return v;
+}
+
+void Matrix<double>::resize(int rowSize, int colSize)
+{
+	if (rowSize < this->rowSize)
+	{
+		for (int i = rowSize; i < this->rowSize; i++)
+			rows.erase(i);
+	}
+	else if (rowSize > this->rowSize)
+	{
+		for (int i = this->rowSize; i < rowSize; i++)
+		{
+			std::map<int, double> r;
+
+			for (int j = 0; j < this->colSize; j++)
+				r.insert(std::make_pair(j, double{}));
+			rows.insert(std::make_pair(i, r));
+		}
+	}
+	this->rowSize = rowSize;
+
+	if (colSize < this->colSize)
+	{
+		for (int i = 0; i < rowSize; i++)
+			for (int j = colSize; j < this->colSize; j++)
+				rows.at(i).erase(j);
+	}
+	else if (colSize > this->colSize)
+	{
+		for (int i = 0; i < this->rowSize; i++)
+			for (int j = this->colSize; j < colSize; j++)
+				rows.at(i).insert(std::make_pair(j, double{}));
+	}
+	this->colSize = colSize;
+}
+
+bool Matrix<double>::isRegular()
+{
+	return determinant() != 0;
+}
+
+bool Matrix<double>::isDimensionEqual(const Matrix<double> &m)
+{
+	return (m.rowSize == rowSize && m.colSize == colSize);
+}
+
+bool Matrix<double>::isSymmetric()
+{
+	return *this == transpose();
+}
+
+Matrix<double> Matrix<double>::transpose()
+{
+	Matrix<double> m = copy(*this);
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			if (i != j)
+				m.setValue(i, j, getValue(j, i));
+	return m;
+}
+
+std::vector<double> Matrix<double>::rowSum()
+{
+	vector<double> sumVector{};
+
+	for (int i = 0; i < this->rowSize; i++)
+	{
+		double sum{};
+		for (int j = 0; j < this->colSize; j++)
+			sum += getValue(i, j);
+		sumVector.push_back(sum);
+	}
+
+	return sumVector;
+}
+
+std::vector<double> Matrix<double>::colSum()
+{
+	vector<double> sumVector{};
+
+	for (int i = 0; i < colSize; i++)
+	{
+		double sum{};
+		for (int j = 0; j < rowSize; j++)
+			sum += getValue(j, i);
+		sumVector.push_back(sum);
+	}
+
+	return sumVector;
+}
+
+double Matrix<double>::multiplyVector(std::vector<double> &v1, std::vector<double> &v2)
+{
+	if (v1.size() != v2.size())
+	{
+		throw std::invalid_argument("Vectors are not the same size!");
+	}
+	else
+	{
+		double res{};
+		for (unsigned int i = 0; i < v1.size(); i++)
+			res += v1[i] * v2[i];
+		return res;
+	}
+}
+
+bool Matrix<double>::operator==(const Matrix<double> &m)
+{
+	if (!isDimensionEqual(m))
+		return false;
+
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			if (m.rows.at(i).at(j) != rows.at(i).at(j))
+				return false;
+
+	return true;
+}
+
+Matrix<double> Matrix<double>::operator+(const Matrix<double> &m)
+{
+	if (!isDimensionEqual(m))
+		throw std::invalid_argument("Matrizes must be of equal Type!");
+
+	Matrix res = Matrix(rowSize, colSize);
+
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			res.setValue(i, j, getValue(i, j) + m.getValue(i, j));
+
+	return res;
+}
+
+Matrix<double> Matrix<double>::operator-(const Matrix<double> &m)
+{
+	if (!isDimensionEqual(m))
+		throw std::invalid_argument("Matrizes must be of equal Type!");
+
+	Matrix res = Matrix(rowSize, colSize);
+
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			res.setValue(i, j, getValue(i, j) - m.getValue(i, j));
+
+	return res;
+}
+
+Matrix<double> Matrix<double>::operator*(const double v)
+{
+	Matrix res = Matrix(rowSize, colSize);
+
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < colSize; j++)
+			res.setValue(i, j, getValue(i, j) * v);
+
+	return res;
+}
+
+std::vector<double> Matrix<double>::operator*(const std::vector<double> &v)
+{
+	if (this->colSize != v.size())
+		throw std::invalid_argument("Vector component-size must match the Matrix's column-size!");
+
+	std::vector<double> res{};
+
+	for (int i = 0; i < this->rowSize; i++)
+	{
+		double sum{};
+		for (int j = 0; j < this->colSize; j++)
+			sum += getValue(i, j)*v[j];
+		res.push_back(sum);
+	}
+	return res;
+}
+
+Matrix<double> Matrix<double>::operator*(Matrix<double> &m)
+{
+	if (colSize != m.rowSize)
+		throw std::invalid_argument("Matrix A's columsize is not equal to Matrix B's rowsize!");
+
+	Matrix res = Matrix(rowSize, m.colSize);
+
+	for (int i = 0; i < rowSize; i++)
+		for (int j = 0; j < m.colSize; j++)
+		{
+			vector<double> v1 = getRow(i);
+			vector<double> v2 = m.getCol(j);
+			res.setValue(i, j, Matrix::multiplyVector(v1, v2));
+		}
+	return res;
+}
+
+double Matrix<double>::determinant()
+{
+	if (rowSize == 1 && colSize == 1)
+		return getValue(0, 0);
+	else if (rowSize == 2 && colSize == 2)
+		return getValue(0, 0)*getValue(1, 1) - getValue(0, 1)*getValue(1, 0);
+	else if (rowSize == 3 && colSize == 3)
+	{
+		//Sarrus Rule
+		return getValue(0, 0)*getValue(1, 1)*getValue(2, 2) + getValue(0, 1)*getValue(1, 2)*getValue(2, 0) + getValue(0, 2)*getValue(1, 0)*getValue(2, 1) -
+			getValue(2, 0)*getValue(1, 1)*getValue(0, 2) - getValue(2, 1)*getValue(1, 2)*getValue(0, 0) - getValue(2, 2)*getValue(1, 0)*getValue(0, 1);
+
+	}
+	else if (rowSize == colSize)
+	{
+		//Gauﬂ Algorithm
+
+		Matrix<Fraction> A = Matrix<Fraction>(rowSize, rowSize);
+		for (int i = 0; i < rowSize; i++)
+			for (int j = 0; j < rowSize; j++)
+			{
+				A.setValue(i,j,Fraction(getValue(i, j)));
+			}
+				
+
+		int pivot[2]{};
+		int multiplier{ 1 };
+
+		for (int pivotRow = 0; pivotRow < rowSize; pivotRow++)
+		{
+			//Init multiplication Matrix Z as Unit Matrix
+			std::vector<Fraction> a{};
+			for (int i = 0; i < rowSize; i++)
+				a.push_back(Fraction(1, 1));
+			Matrix<Fraction> Z = Matrix<Fraction>(a);
+
+			// find highest |Value(i,j)|
+			std::vector<Fraction> pivotCol = A.getCol(pivotRow);
+			Fraction highestValue = pivotCol[pivotRow];
+			int highestIndex{ pivotRow };
+
+			for (unsigned int i = pivotRow; i < pivotCol.size(); i++)
+				if (pivotCol[i].abs() > highestValue)
+				{
+					highestValue = pivotCol[i];
+					highestIndex = i;
+				}
+			// swap pivot row with high row
+			if (highestIndex != pivotRow)
+			{
+				A.swapRow(pivotRow, highestIndex);
+				pivotCol = A.getCol(pivotRow);
+				multiplier *= -1;
+			}
+
+			// Create multiplication Matrix Z
+			for (unsigned int i = pivotRow + 1; i < pivotCol.size(); i++)
+			{
+				if (pivotCol[i].getNumerator() != 0)
+				{
+					Fraction temp = A.getValue(i, pivotRow) / A.getValue(pivotRow, pivotRow) * -1;
+					Z.setValue(i, pivotRow, temp);
+				}
+			}
+
+			A = Z * A;
+		}
+		//multiply diagonal, divide by multiplier
+		Fraction determinant = Fraction(1, 1);
+		for (int i = 0; i < rowSize; i++)
+			determinant *= A.getValue(i, i);
+
+		return determinant.to_double() / multiplier;
+	}
+	else
+	{
+		throw std::invalid_argument("Matrix must be nxn!");
+	}
+}

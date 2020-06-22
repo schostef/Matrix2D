@@ -8,7 +8,7 @@ namespace UnitTest1
 {
 	TEST_CLASS(UnitTest1)
 	{	
-		TEST_METHOD(SimpleTests)
+		TEST_METHOD(SimpleTests_TypeInt)
 		{
 			Matrix<int> m1 = Matrix<int>::Matrix(3, 3);
 			Matrix<int> m2 = Matrix<int>::Matrix(4, 4);
@@ -16,9 +16,7 @@ namespace UnitTest1
 			Matrix<int> m4 = Matrix<int>::Matrix(3, 3);
 			Matrix<int> m5 = Matrix<int>::Matrix(2, 3);
 			Matrix<int> m6 = Matrix<int>::Matrix(3, 2);
-			Matrix<int> res = Matrix<int>::Matrix(3, 3);
-
-			
+			Matrix<int> res = Matrix<int>::Matrix(3, 3);			
 
 			m1.setValue(0, 0, 0); m1.setValue(0, 1, 2); m1.setValue(0, 2, -3);
 			m1.setValue(1, 0, 1); m1.setValue(1, 1, 2);	m1.setValue(1, 2, 3); 
@@ -50,29 +48,6 @@ namespace UnitTest1
 			res.setValue(1, 0, 1); res.setValue(1, 1, 1); res.setValue(1, 2, 1);
 			res.setValue(2, 0, 1); res.setValue(2, 1, 1); res.setValue(2, 2, 1);
 			
-			/*void swapRow(int rowID1, int rowID2);
-			void swapCol(int colID1, int colID2);
-			static Matrix<int> copy(Matrix<int> &m);
-			std::vector<int> getRow(int key);
-			std::vector<int> getCol(int key);
-			int getValue(int row, int col) const;
-			void setValue(int row, int col, int val);
-			void resize(int rowSize, int colSize);
-			bool isRegular();
-			bool isDimensionEqual(const Matrix &m);
-			bool isSymmetric();
-			Matrix<int> transpose();
-			std::vector<int> rowSum();
-			std::vector<int> colSum();
-			static int multiplyVector(std::vector<int> &v1, std::vector<int> &v2);
-			bool operator==(const Matrix<int> &m);
-			Matrix operator+(const Matrix<int> &m);
-			Matrix operator-(const Matrix<int> &m);
-			Matrix operator*(const int v);
-			std::vector<int> operator*(const std::vector<int> &v);
-			Matrix operator*(const Matrix<int> &m);
-			int determinant();*/
-
 			res.resize(4, 4);
 			res.setValue(0, 0, 1); res.setValue(0, 1, -2); res.setValue(0, 2, -3); res.setValue(0, 3, 4);
 			res.setValue(2, 0, 6); res.setValue(2, 1, 2);  res.setValue(2, 2, -3); res.setValue(2, 3, 6);
@@ -93,10 +68,10 @@ namespace UnitTest1
 			Matrix<int> m1Copy = Matrix<int>::copy(m1);
 			Assert::IsTrue(m1Copy == m1);
 
-			std::vector<int> v1{ 6,2,-3,6 };  
-			std::vector<int> v2{ -3,-3,2,8 };
-			//Assert::IsTrue(v1 == m2.getRow(2));
-			//Assert::IsTrue(v2 == m2.getCol(3));
+			std::vector<int> v1{ 6,2,6,-3 };  
+			std::vector<int> v2{ -3,2,-3,8 };
+			Assert::IsTrue(v1 == m2.getRow(2));
+			Assert::IsTrue(v2 == m2.getCol(3));
 			Assert::IsTrue(m1.isDimensionEqual(m4));
 
 			res.setValue(0, 0, 1);  res.setValue(0, 1, -2); res.setValue(0, 2, -3); res.setValue(0, 3, 4);
@@ -106,7 +81,7 @@ namespace UnitTest1
 			Assert::IsTrue(res.isSymmetric());
 			Assert::IsTrue(res.rowSum() == std::vector<int>{0, -2, 1, 9});
 			Assert::IsTrue(res.colSum() == std::vector<int>{0, -2, 1, 9});
-			Assert::IsTrue(Matrix<int>::multiplyVector(v1, v2) == 18);
+			Assert::IsTrue(Matrix<int>::multiplyVector(v1, v2) == -56);
 			try
 			{
 				m5 + m6;
@@ -165,6 +140,82 @@ namespace UnitTest1
 			Assert::IsTrue(28 == m1.determinant());
 			Assert::IsTrue(-287 == m2.determinant());
 			Assert::IsTrue(1052 == m3.determinant());			
+
+			// Kirchhoff Test
+			// with a Pentagram
+			Matrix<int> A = Matrix<int>::Matrix(5, 5);
+			A.setValue(0, 0, 0); A.setValue(0, 1, 0);  A.setValue(0, 2, 1);  A.setValue(0, 3, 1); A.setValue(0, 4, 0);
+			A.setValue(1, 0, 0); A.setValue(1, 1, 0);  A.setValue(1, 2, 0);  A.setValue(1, 3, 1); A.setValue(1, 4, 1);
+			A.setValue(2, 0, 1); A.setValue(2, 1, 0);  A.setValue(2, 2, 0);  A.setValue(2, 3, 0); A.setValue(2, 4, 1);
+			A.setValue(3, 0, 1); A.setValue(3, 1, 1);  A.setValue(3, 2, 0);  A.setValue(3, 3, 0); A.setValue(3, 4, 0);
+			A.setValue(4, 0, 0); A.setValue(4, 1, 1);  A.setValue(4, 2, 1);  A.setValue(4, 3, 0); A.setValue(4, 4, 0);
+
+			Matrix<int> L = Matrix<int>::Matrix(5, 5);
+			L.setValue(0, 0, 2); L.setValue(0, 1, 0);  L.setValue(0, 2, 0);  L.setValue(0, 3, 0); L.setValue(0, 4, 0);
+			L.setValue(1, 0, 0); L.setValue(1, 1, 2);  L.setValue(1, 2, 0);  L.setValue(1, 3, 0); L.setValue(1, 4, 0);
+			L.setValue(2, 0, 0); L.setValue(2, 1, 0);  L.setValue(2, 2, 2);  L.setValue(2, 3, 0); L.setValue(2, 4, 0);
+			L.setValue(3, 0, 0); L.setValue(3, 1, 0);  L.setValue(3, 2, 0);  L.setValue(3, 3, 2); L.setValue(3, 4, 0);
+			L.setValue(4, 0, 0); L.setValue(4, 1, 0);  L.setValue(4, 2, 0);  L.setValue(4, 3, 0); L.setValue(4, 4, 2);
+
+			Matrix<int> K = Matrix<int>::Matrix(5, 5);
+
+			Assert::IsTrue(A.isSymmetric());
+			Assert::IsTrue(A.isRegular());
+			K = L - A;
+			K.resize(4, 4);
+			Assert::IsTrue(5 == K.determinant());
+		}
+
+		TEST_METHOD(SimpleTests_TypeBool)
+		{
+			Matrix<bool> m1 = Matrix<bool>::Matrix(4, 1);
+			Matrix<bool> m2 = Matrix<bool>::Matrix(4, 1);
+			Matrix<bool> res = Matrix<bool>::Matrix(4, 1);
+
+			m1.setValue(0, 0, true); 
+			m1.setValue(1, 0, true); 
+			m1.setValue(2, 0, false);
+			m1.setValue(3, 0, false);
+
+			m2.setValue(0, 0, true);
+			m2.setValue(1, 0, false);
+			m2.setValue(2, 0, true);
+			m2.setValue(3, 0, false);
+
+
+			res.setValue(0, 0, true);
+			res.setValue(1, 0, false);
+			res.setValue(2, 0, false);
+			res.setValue(3, 0, false);
+			Assert::IsTrue(res == (m1 && m2));
+
+			res.setValue(0, 0, true);
+			res.setValue(1, 0, true);
+			res.setValue(2, 0, true);
+			res.setValue(3, 0, false);
+			Assert::IsTrue(res == (m1 || m2));
+
+			res.setValue(0, 0, false);
+			res.setValue(1, 0, false);
+			res.setValue(2, 0, true);
+			res.setValue(3, 0, true);
+			Assert::IsTrue(res == !m1);		
+		}
+
+		TEST_METHOD(SimpleTests_TypeDouble)
+		{
+			Matrix<double> m1 = Matrix<double>::Matrix(5, 5);
+			Matrix<double> m2 = Matrix<double>::Matrix(5, 5);
+			Matrix<double> res = Matrix<double>::Matrix(5, 5);
+			double res2 = -2.79191;
+
+			m1.setValue(0, 0, 0.5); m1.setValue(0, 1, 1.4);  m1.setValue(0, 2, 3.1);  m1.setValue(0, 3, 0.3); m1.setValue(0, 4, 2.4);
+			m1.setValue(1, 0, 3.3); m1.setValue(1, 1, 2.5);  m1.setValue(1, 2, 4.2);  m1.setValue(1, 3, 1.0); m1.setValue(1, 4, 0.1);
+			m1.setValue(2, 0, 2.1); m1.setValue(2, 1, 2.2);  m1.setValue(2, 2, 3.5);  m1.setValue(2, 3, 1.1); m1.setValue(2, 4, 0.9);
+			m1.setValue(3, 0, 1.7); m1.setValue(3, 1, 3.2);  m1.setValue(3, 2, 2.8);  m1.setValue(3, 3, 1.4); m1.setValue(3, 4, 0.7);
+			m1.setValue(4, 0, 2.5); m1.setValue(4, 1, 3.8);  m1.setValue(4, 2, 4.9);  m1.setValue(4, 3, 5.0); m1.setValue(4, 4, 2.9);
+
+			Assert::IsTrue(res2 == m1.determinant());
 		}
 	};
 }																					

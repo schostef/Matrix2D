@@ -13,6 +13,7 @@ private:
 	void simplify();
 public:
 	Fraction(long long num, long long denom);
+	Fraction(double d);
 	Fraction();
 
 	Fraction operator+(const Fraction &f);

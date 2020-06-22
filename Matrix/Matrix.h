@@ -60,54 +60,65 @@ public:
 	int determinant();	
 };
 
-//template<>
-//class Matrix<bool>
-//{
-//private:
-//	int rowSize;
-//	int colSize;
-//protected:
-//	std::map<int, mRow<bool>> rows;
-//public:		
-//	bool getValue(int row, int col);
-//	void setValue(int row, int col, bool val);
-//	void resize(int rowSize, int colSize);
-//	bool isDimensionEqual(Matrix &m);
-//	bool isSymmetric();
-//	Matrix<bool> transpose();
-//	bool operator==(const Matrix<bool> &m);
-//	Matrix operator!();	
-//	Matrix operator&&(const Matrix &m);
-//	Matrix operator||(const Matrix &m);	
-//	bool isTautologic();		
-//};
+template<>
+class Matrix<bool>
+{
+private:
+	int rowSize;
+	int colSize;
+	std::map<int, std::map<int, bool>> rows;
+public:		
+	Matrix() {};
+	Matrix(int, int);
+	Matrix(std::vector<bool>);
+	static Matrix<bool> copy(Matrix<bool> &m);
+	bool getValue(int row, int col) const;
+	void setValue(int row, int col, bool val);
+	void resize(int rowSize, int colSize);
+	bool isDimensionEqual(const Matrix &m);
+	bool isSymmetric();
+	Matrix<bool> transpose();
+	bool operator==(const Matrix<bool> &m);
+	Matrix operator!();	
+	Matrix operator&&(const Matrix &m);
+	Matrix operator||(const Matrix &m);	
+	bool isTautologic();		
+};
 
-//template<>
-//class Matrix<double>
-//{
-//private:
-//	int rowSize;
-//	int colSize;
-//protected:
-//	std::map<int, mRow<double>> rows;
-//public:					
-//	double getValue(int row, int col);
-//	void setValue(int row, int col, double val);
-//	void resize(int rowSize, int colSize);
-//	bool isRegular();
-//	bool isDimensionEqual(Matrix &m);
-//	bool isSymmetric();
-//	Matrix<double> transpose();	
-//	std::vector<double> rowSum();
-//	std::vector<double> colSum();
-//	bool operator==(const Matrix<double> &m);
-//	Matrix operator+(const Matrix<double> &m);
-//	Matrix operator-(const Matrix<double> &m);
-//	Matrix operator*(const double v);
-//	std::vector<double> operator*(const std::vector<double> &v);
-//	Matrix operator*(const Matrix<double> &m);
-//	double determinant();	
-//};
+template<>
+class Matrix<double>
+{
+private:
+	int rowSize;
+	int colSize;
+	std::map<int, std::map<int,double>> rows;
+public:			
+	Matrix() {};
+	Matrix(int, int);
+	Matrix(std::vector<double>);
+	static Matrix<double> copy(Matrix<double> &m);
+	double getValue(int row, int col) const;
+	void setValue(int row, int col, double val);
+	void swapRow(int rowID1, int rowID2);
+	void swapCol(int colID1, int colID2);
+	std::vector<double> getRow(int key);
+	std::vector<double> getCol(int key);
+	void resize(int rowSize, int colSize);
+	bool isRegular();
+	bool isDimensionEqual(const Matrix<double> &m);
+	bool isSymmetric();
+	Matrix<double> transpose();	
+	std::vector<double> rowSum();
+	std::vector<double> colSum();
+	static double multiplyVector(std::vector<double> &v1, std::vector<double> &v2);
+	bool operator==(const Matrix<double> &m);
+	Matrix<double> operator+(const Matrix<double> &m);
+	Matrix<double> operator-(const Matrix<double> &m);
+	Matrix<double> operator*(const double v);
+	std::vector<double> operator*(const std::vector<double> &v);
+	Matrix<double> operator*(Matrix<double> &m);
+	double determinant();	
+};
 
 #endif
 
