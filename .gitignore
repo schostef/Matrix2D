@@ -359,3 +359,9 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 UnitTest1/
+UnitTest1/pch.cpp
+UnitTest1/pch.h
+UnitTest1/UnitTest1.cpp
+UnitTest1/UnitTest1.vcxproj
+UnitTest1/UnitTest1.vcxproj.filters
+UnitTest1/UnitTest1.vcxproj.user
